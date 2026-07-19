@@ -1,0 +1,11 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <AssemblyName>DevOpsReview.Smoke</AssemblyName>
+    <RootNamespace>DevOpsReview.Smoke</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\DevOpsReview.Bridge\DevOpsReview.Bridge.csproj" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="src/DevOpsReview.Bridge/DevOpsReview.Bridge.csproj" />
+  <Project Path="tests/DevOpsReview.Bridge.Tests/DevOpsReview.Bridge.Tests.csproj" />
+  <Project Path="tools/DevOpsReview.Smoke/DevOpsReview.Smoke.csproj" />
+  <Project Path="tools/DevOpsReview.NativeHostSmoke/DevOpsReview.NativeHostSmoke.csproj" />
+</Solution>

@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Azure DevOps Codex Review 设置</title>
+  <style>
+    body { max-width: 720px; margin: 40px auto; padding: 0 20px; font: 14px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; color: #101828; }
+    h1 { margin-bottom: 8px; }
+    .hint { color: #667085; }
+    label { display: block; margin: 24px 0 8px; font-weight: 600; }
+    input { width: 100%; box-sizing: border-box; padding: 10px 12px; border: 1px solid #d0d5dd; border-radius: 8px; }
+    button { margin-top: 14px; padding: 9px 14px; border: 0; border-radius: 8px; background: #155eef; color: #fff; font: inherit; font-weight: 600; cursor: pointer; }
+    #status { margin-top: 14px; }
+    code { background: #f2f4f7; padding: 2px 5px; border-radius: 4px; }
+  </style>
+</head>
+<body>
+  <h1>Azure DevOps Codex Review</h1>
+  <p class="hint">扩展只会请求你明确配置的 Azure DevOps Server 站点权限。请输入 Collection 之前的服务器根地址。</p>
+
+  <form id="settings-form">
+    <label for="server-url">Azure DevOps Server 根地址</label>
+    <input id="server-url" type="url" required placeholder="http://localhost:8081/tfs">
+    <p class="hint">例如 PR 地址为 <code>http://host:8081/tfs/DefaultCollection/Project/_git/Repo/pullrequest/12</code>，这里填写 <code>http://host:8081/tfs</code>。</p>
+    <button type="submit">授权并保存</button>
+  </form>
+  <p id="status" role="status"></p>
+
+  <script src="shared.js"></script>
+  <script src="options.js"></script>
+</body>
+</html>

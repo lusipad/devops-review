@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Azure DevOps Codex Review</title>
+  <link rel="stylesheet" href="panel.css">
+</head>
+<body>
+  <main>
+    <header>
+      <p class="eyebrow">AZURE DEVOPS REVIEW</p>
+      <h1>问 Codex</h1>
+      <p id="connection" class="status" role="status">正在连接本地 Bridge…</p>
+    </header>
+
+    <section class="context" aria-labelledby="context-heading">
+      <h2 id="context-heading">当前选区</h2>
+      <p id="empty-selection">请在 Pull Request 文件视图中选择代码，然后点击“问 Codex”。</p>
+      <dl id="selection-details" hidden>
+        <div><dt>仓库</dt><dd id="repository"></dd></div>
+        <div><dt>PR</dt><dd id="pull-request"></dd></div>
+        <div><dt>文件</dt><dd id="file-path"></dd></div>
+        <div><dt>行号</dt><dd id="line-range"></dd></div>
+      </dl>
+      <pre id="selected-code" hidden></pre>
+    </section>
+
+    <form id="review-form">
+      <label for="question">你想了解什么？</label>
+      <textarea id="question" maxlength="4000" rows="4" required
+        placeholder="例如：这里在并发情况下会不会重复写入？"></textarea>
+      <div class="actions">
+        <button id="ask" type="submit">开始分析</button>
+        <button id="cancel" type="button" class="secondary" hidden>取消</button>
+        <button id="publish" type="button" class="secondary" hidden>发布到 PR</button>
+      </div>
+    </form>
+
+    <section class="answer" aria-labelledby="answer-heading">
+      <div class="answer-heading-row">
+        <h2 id="answer-heading">回答</h2>
+        <span id="progress"></span>
+      </div>
+      <pre id="answer" aria-live="polite"></pre>
+      <p id="error" class="error" role="alert" hidden></p>
+    </section>
+  </main>
+
+  <script src="shared.js"></script>
+  <script src="panel.js"></script>
+</body>
+</html>

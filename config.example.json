@@ -1,0 +1,19 @@
+{
+  "dataDirectory": "C:\\Users\\YOUR_USER\\AppData\\Local\\DevOpsReview",
+  "worktreeRoot": "C:\\Users\\YOUR_USER\\AppData\\Local\\DevOpsReview\\worktrees",
+  "codexExecutable": "codex",
+  "allowedExtensionOrigins": [
+    "chrome-extension://kldpfliioeaahafemncagclpehbnblig/"
+  ],
+  "repositories": [
+    {
+      "serverUrl": "http://devops.company.internal:8080/tfs",
+      "collection": "DefaultCollection",
+      "project": "Orders",
+      "repository": "Orders.Api",
+      "localPath": "D:\\Source\\Orders.Api",
+      "authMode": "Windows",
+      "apiVersion": "7.0"
+    }
+  ]
+}

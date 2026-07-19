@@ -1,0 +1,18 @@
+**/bin/
+**/obj/
+.vs/
+.idea/
+.vscode/
+TestResults/
+artifacts/
+coverage/
+extension/dist/
+*.user
+*.suo
+*.log
+
+# Local runtime state and secrets
+data/
+worktrees/
+appsettings.local.json
+native-host-manifest.local.json
