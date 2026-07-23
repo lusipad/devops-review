@@ -11,6 +11,8 @@ if ([string]::IsNullOrWhiteSpace($OutputPath)) {
     $OutputPath = Join-Path $repoRoot "artifacts\devops-review-$Version-win-x64.zip"
 }
 $outputFull = [IO.Path]::GetFullPath($OutputPath)
+$artifactsDirectory = Split-Path -Parent $outputFull
+$installerPath = Join-Path $artifactsDirectory "DevOpsReview-Setup-$Version.exe"
 $publishDirectory = Join-Path $repoRoot 'artifacts\bridge-win-x64'
 $staging = Join-Path $env:TEMP "devops-review-release-$([Guid]::NewGuid().ToString('N'))"
 $packageRoot = Join-Path $staging "devops-review-$Version-win-x64"
@@ -54,13 +56,50 @@ try {
     }
     $checksums | Set-Content -LiteralPath (Join-Path $packageRoot 'SHA256SUMS.txt') -Encoding ascii
 
-    New-Item -ItemType Directory -Force -Path (Split-Path -Parent $outputFull) | Out-Null
+    New-Item -ItemType Directory -Force -Path $artifactsDirectory | Out-Null
     Compress-Archive -Path $packageRoot -DestinationPath $outputFull -Force
     $archiveHash = Get-FileHash -Algorithm SHA256 -LiteralPath $outputFull
     "$($archiveHash.Hash.ToLowerInvariant())  $([IO.Path]::GetFileName($outputFull))" |
         Set-Content -LiteralPath "$outputFull.sha256" -Encoding ascii
+
+    $iscc = Get-Command 'ISCC.exe' -ErrorAction SilentlyContinue
+    if ($null -eq $iscc) {
+        $isccCandidates = @(
+            (Join-Path $env:LOCALAPPDATA 'Programs\Inno Setup 6\ISCC.exe'),
+            (Join-Path ${env:ProgramFiles(x86)} 'Inno Setup 6\ISCC.exe'),
+            (Join-Path $env:ProgramFiles 'Inno Setup 6\ISCC.exe')
+        )
+        $isccPath = $isccCandidates |
+            Where-Object { -not [string]::IsNullOrWhiteSpace($_) -and (Test-Path -LiteralPath $_) } |
+            Select-Object -First 1
+    }
+    else {
+        $isccPath = $iscc.Source
+    }
+    if ([string]::IsNullOrWhiteSpace($isccPath)) {
+        throw 'Inno Setup 6 compiler (ISCC.exe) was not found.'
+    }
+
+    & $isccPath `
+        '/Qp' `
+        "/DAppVersion=$Version" `
+        "/DPackageRoot=$packageRoot" `
+        "/O$artifactsDirectory" `
+        (Join-Path $repoRoot 'installer\DevOpsReview.iss')
+    if ($LASTEXITCODE -ne 0) {
+        throw "Inno Setup compilation failed with exit code $LASTEXITCODE."
+    }
+    if (-not (Test-Path -LiteralPath $installerPath)) {
+        throw "Installer was not created: $installerPath"
+    }
+    $installerHash = Get-FileHash -Algorithm SHA256 -LiteralPath $installerPath
+    "$($installerHash.Hash.ToLowerInvariant())  $([IO.Path]::GetFileName($installerPath))" |
+        Set-Content -LiteralPath "$installerPath.sha256" -Encoding ascii
+
     Write-Host "Release package: $outputFull"
     Write-Host "Release checksum: $outputFull.sha256"
+    Write-Host "Installer: $installerPath"
+    Write-Host "Installer checksum: $installerPath.sha256"
 }
 finally {
     if (Test-Path -LiteralPath $staging) {

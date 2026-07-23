@@ -1,14 +1,41 @@
 # Windows 发布包使用说明
 
-发布包名称：
+推荐下载单文件安装器：
+
+```text
+DevOpsReview-Setup-0.1.0.exe
+```
+
+需要便携式文件或手工部署时使用 ZIP：
 
 ```text
 devops-review-0.1.0-win-x64.zip
 ```
 
-它包含 self-contained Bridge、可加载的 unpacked 扩展、安装/卸载脚本、配置示例、文档和包内 SHA-256 校验文件。同目录的 `.zip.sha256` 文件用于下载后校验整个 ZIP。目标机器不需要安装 .NET Runtime，但仍需要 Git、Edge/Chrome 和已登录的 Codex CLI。
+两种方式都包含 self-contained Bridge、可加载的 unpacked 扩展、配置示例和文档。同目录的 `.sha256` 文件用于下载后校验。目标机器不需要安装 .NET Runtime，但仍需要 Git、Edge/Chrome 和已登录的 Codex CLI。
 
-## 安装
+## 使用安装器（推荐）
+
+1. 下载 `DevOpsReview-Setup-0.1.0.exe` 和对应的 `.exe.sha256`。
+2. 校验安装器：
+
+   ```powershell
+   $expected = (Get-Content .\DevOpsReview-Setup-0.1.0.exe.sha256).Split(' ')[0]
+   $actual = (Get-FileHash .\DevOpsReview-Setup-0.1.0.exe -Algorithm SHA256).Hash.ToLowerInvariant()
+   if ($actual -ne $expected) { throw '安装器 SHA-256 不匹配' }
+   ```
+
+3. 双击安装器。它按当前用户安装，不需要管理员权限，并为所选浏览器注册 Native Messaging Host。
+4. 编辑 `%LOCALAPPDATA%\DevOpsReview\config.json`，完整字段见 [配置说明](configuration.md)。
+5. 打开 `edge://extensions` 或 `chrome://extensions`，启用开发人员模式。
+6. 点击“加载解压缩的扩展”，选择 `%LOCALAPPDATA%\Programs\DevOpsReview\app\extension`。
+7. 确认扩展 ID 为 `kldpfliioeaahafemncagclpehbnblig`。
+8. 打开扩展设置页，填写 Collection 之前的 Azure DevOps Server 根地址并授权。
+9. 重新加载 PR Files 页面，选择右侧/source 代码并点击“问 Codex”。
+
+浏览器安全模型不允许普通安装器静默加载 unpacked 扩展，因此第 5—7 步只需人工完成一次。
+
+## 使用 ZIP
 
 1. 解压 ZIP，保留目录结构。
 2. 在解压目录打开 PowerShell：
@@ -45,11 +72,13 @@ Get-FileHash .\bridge\DevOpsReview.Bridge.exe -Algorithm SHA256
 
 ## 升级
 
-关闭所有扩展侧栏后重新运行新包的 `install-package.ps1`。安装器会替换程序文件和 Native Messaging manifest，但不会覆盖现有 `config.json`、SQLite 会话或 worktree。
+关闭所有扩展侧栏后运行新版 EXE 安装器，或重新运行新 ZIP 中的 `install-package.ps1`。两种方式都会替换程序文件和 Native Messaging manifest，但不会覆盖现有 `config.json`、SQLite 会话或 worktree。
 
 ## 卸载
 
-默认保留配置、会话和 worktree：
+EXE 安装版可在 Windows“已安装的应用”中卸载。默认保留 `%LOCALAPPDATA%\DevOpsReview` 下的配置、会话和 worktree。
+
+ZIP 安装版可运行：
 
 ```powershell
 pwsh -File .\scripts\uninstall.ps1
