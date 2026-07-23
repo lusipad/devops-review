@@ -109,8 +109,8 @@ pwsh -File .\scripts\package-release.ps1
 
 输出包括：
 
-- `artifacts\DevOpsReview-Setup-0.1.0.exe` 和对应的 `.exe.sha256`：推荐给普通用户的单文件安装器；
-- `artifacts\devops-review-0.1.0-win-x64.zip` 和对应的 `.zip.sha256`：包含 self-contained Bridge、unpacked 扩展、安装/卸载脚本、配置示例、文档和 SHA-256 校验文件。
+- `artifacts\DevOpsReview-Setup-0.2.0.exe` 和对应的 `.exe.sha256`：推荐给普通用户的单文件安装器；
+- `artifacts\devops-review-0.2.0-win-x64.zip` 和对应的 `.zip.sha256`：包含 self-contained Bridge、unpacked 扩展、安装/卸载脚本、配置示例、文档和 SHA-256 校验文件。
 
 生成安装器需要 Inno Setup 6。目标机操作见 [发布包说明](docs/release-package.md)，高级和多仓库配置见 [配置说明](docs/configuration.md)。
 

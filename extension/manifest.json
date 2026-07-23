@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Azure DevOps Codex Review",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Ask Codex about selected Azure DevOps PR code using the complete local repository.",
   "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA2ed40vi0gormeFSKIRm5IZISo1wXNUWwcj6Ye4+KU1c8Qoib8of4FCDw018+rFiiTo4rwyWaOHE4S52t90BCPEId2BJoORnqyNInGBE3lyObDanzZc9keHxo3fYLh7qVB8YpceTP/aXYjzmMq+LvLRUCruN7PN5JWXMz4BJhlftkMr/xPz+jJjJwp9uTkBF+GZRm5ysgSUn8U1EPTKdQ6MWARd9Nl2ZwYZovvmSpqpqba/b8I0Bx+U68CH+g5WEdx81yXjwgGH5kMeTTa35xpV6MYx6MW4XF60a5zkjYHYOFYU2MkVVnKnoklYVEpJVQuawqahYk1lcWf1JQ+axUFwIDAQAB",
   "permissions": [

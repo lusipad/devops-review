@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.2.0 — 2026-07-24
+
+- 可直接从 GitHub Release 下载按用户安装的单文件 Windows EXE，无需预装 .NET Runtime；
+- 安装后通过图形配置工具粘贴 PR/仓库地址并选择本地目录，无需手工编辑 JSON；
+- 使用当前 Windows 会话协商 Kerberos/NTLM，并在保存前验证完整 Git origin、Azure DevOps 和 Codex 登录；
+- GitHub Actions 在 `v*` 标签通过测试后自动发布 EXE、ZIP 及其 SHA-256 校验文件；
+- 保留现有配置、会话和 worktree，升级或默认卸载不会删除用户数据。
+
 ## 0.1.0 — 2026-07-20
 
 首个 Windows 本地单用户版本：
