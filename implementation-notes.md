@@ -11,6 +11,8 @@ Plan: `docs/implementation-plan.md`
 - 2026-07-20: Filter App Server `commentary` items from the answer and normalize local worktree links before the answer becomes publishable.
 - 2026-07-23: Package the existing release payload into a per-user Inno Setup EXE. Keep the browser extension unpacked because Chrome/Edge do not allow a normal installer to silently load it.
 - 2026-07-23: Use a stable `%LOCALAPPDATA%\Programs\DevOpsReview\app` install path so upgrades replace the active Bridge while preserving `%LOCALAPPDATA%\DevOpsReview` data.
+- 2026-07-24: Keep Windows authentication credential-free in the UI. `AzureDevOpsClient` already uses `CredentialCache.DefaultNetworkCredentials`, so the configurator verifies the current session rather than probing or storing a username/password.
+- 2026-07-24: Reduce first-run configuration to one Azure DevOps PR/repository URL and one local repository folder. Derive server, collection, project, repository, worktree root, Codex path, extension origin, auth mode, and API version.
 
 ## Deviations
 
@@ -27,6 +29,7 @@ None.
 - Isolated Edge QA found and fixed the panel initialization ordering bug that left Ask disabled after the Native Host connected.
 - NuGet audit found the bundled `SQLitePCLRaw.lib.e_sqlite3` chain affected by CVE-2025-6965 with no patched package version. Because the product is Windows-only, the Bridge now uses `Microsoft.Data.Sqlite.Core` with `SQLitePCLRaw.bundle_winsqlite3`; the follow-up audit reports no vulnerable packages.
 - The generated Native Messaging manifest is not tracked by Inno Setup's `[Files]` section; an explicit `[UninstallDelete]` entry is required to avoid leaving the install directory behind.
+- The first WinForms layout was clipped by the machine's high-DPI scaling. Setting DPI autoscaling before the client size and reserving a fixed fill layout produced a 92/100 visual verdict with all controls visible.
 
 ## Questions for review
 

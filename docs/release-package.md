@@ -26,14 +26,16 @@ devops-review-0.1.0-win-x64.zip
    ```
 
 3. 双击安装器。它按当前用户安装，不需要管理员权限，并为所选浏览器注册 Native Messaging Host。
-4. 编辑 `%LOCALAPPDATA%\DevOpsReview\config.json`，完整字段见 [配置说明](configuration.md)。
-5. 打开 `edge://extensions` 或 `chrome://extensions`，启用开发人员模式。
-6. 点击“加载解压缩的扩展”，选择 `%LOCALAPPDATA%\Programs\DevOpsReview\app\extension`。
-7. 确认扩展 ID 为 `kldpfliioeaahafemncagclpehbnblig`。
-8. 打开扩展设置页，填写 Collection 之前的 Azure DevOps Server 根地址并授权。
-9. 重新加载 PR Files 页面，选择右侧/source 代码并点击“问 Codex”。
+4. 安装结束后，在自动打开的配置工具中粘贴一个 Azure DevOps PR/仓库地址并选择本地 clone 目录。
+5. 点击“测试连接”；工具会验证 Git origin、当前 Windows 身份、Azure DevOps 和 Codex 登录。
+6. 点击“保存并完成”，再点击“打开扩展目录”。
+7. 打开 `edge://extensions` 或 `chrome://extensions`，启用开发人员模式。
+8. 点击“加载解压缩的扩展”，选择 `%LOCALAPPDATA%\Programs\DevOpsReview\app\extension`。
+9. 确认扩展 ID 为 `kldpfliioeaahafemncagclpehbnblig`。
+10. 打开扩展设置页，填写 Collection 之前的 Azure DevOps Server 根地址并授权。
+11. 重新加载 PR Files 页面，选择右侧/source 代码并点击“问 Codex”。
 
-浏览器安全模型不允许普通安装器静默加载 unpacked 扩展，因此第 5—7 步只需人工完成一次。
+浏览器安全模型不允许普通安装器静默加载 unpacked 扩展，因此第 7—9 步只需人工完成一次。
 
 ## 使用 ZIP
 

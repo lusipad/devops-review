@@ -11,4 +11,5 @@
 - Codex App Server 固定为 UTF-8、只读 sandbox 和 `approvalPolicy=never`；
 - 只把 `final_answer` 作为答案，净化本地绝对路径后才允许显式发布 PR 评论；
 - 支持 Windows 集成认证和环境变量 PAT；
+- 提供图形配置工具，通过 PR 地址和目录选择自动生成单仓库配置并验证 Git、NTLM/Kerberos 与 Codex；
 - 提供 GitHub Actions 生成的单文件 EXE 安装器、ZIP 发布包、卸载器、完整配置文档和 SHA-256 清单。

@@ -6,7 +6,16 @@ Bridge 默认读取：
 %LOCALAPPDATA%\DevOpsReview\config.json
 ```
 
-安装脚本只在文件不存在时复制示例，不会覆盖已有配置。修改后关闭所有扩展侧栏再重新打开，使 Native Host 重启并重新读取配置。
+普通用户不需要手工编辑这个文件。安装器完成后会自动打开“DevOps Review 配置”：
+
+1. 粘贴任意一个 Azure DevOps PR 或仓库地址；
+2. 点击“浏览…”选择对应的本地 Git 仓库根目录；
+3. 点击“测试连接”；
+4. 测试通过后点击“保存并完成”。
+
+工具会自动解析服务器、Collection、项目和仓库，检查本地 `origin`、当前 Windows 身份和 Codex 登录，并生成配置。以后可从开始菜单的“配置 DevOps Review”重新打开。修改后关闭所有扩展侧栏再重新打开，使 Native Host 重启并重新读取配置。
+
+以下 JSON 说明仅用于多仓库、PAT 或其他高级场景。
 
 ## 完整示例
 
@@ -69,7 +78,7 @@ Bridge 会从 Azure DevOps REST 重新取得 PR iteration、source SHA 和 targe
 "authMode": "Windows"
 ```
 
-Bridge 和 Git 使用当前 Windows 用户。先在普通 PowerShell 中验证：
+Bridge 使用当前 Windows 登录会话的默认网络凭据，由 Azure DevOps Server 协商 Kerberos/NTLM；配置工具不会读取、显示或保存密码。Git 同样使用当前 Windows 用户。先在普通 PowerShell 中验证：
 
 ```powershell
 git -c http.emptyAuth=true -C D:\Source\Orders.Api fetch origin

@@ -18,6 +18,24 @@ public sealed class AzureDevOpsClient
         this.handlerFactory = handlerFactory ?? (mapping => CreateHandler(mapping));
     }
 
+    public async Task TestConnectionAsync(
+        RepositoryMapping mapping,
+        CancellationToken cancellationToken)
+    {
+        using var handler = handlerFactory(mapping);
+        using var client = new HttpClient(handler)
+        {
+            Timeout = TimeSpan.FromSeconds(30),
+        };
+        ApplyAuthentication(client, mapping);
+
+        var server = mapping.ServerUrl.TrimEnd('/');
+        using var response = await GetJsonAsync(
+            client,
+            $"{server}/{Escape(mapping.Collection)}/{Escape(mapping.Project)}/_apis/git/repositories/{Escape(mapping.Repository)}?api-version={Escape(mapping.ApiVersion)}",
+            cancellationToken).ConfigureAwait(false);
+    }
+
     public async Task<PullRequestContext> GetPullRequestContextAsync(
         ValidatedReviewRequest request,
         CancellationToken cancellationToken)

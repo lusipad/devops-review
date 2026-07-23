@@ -9,6 +9,27 @@ namespace DevOpsReview.Bridge.Tests.AzureDevOps;
 public sealed class AzureDevOpsClientTests
 {
     [Fact]
+    public async Task TestsConfiguredRepositoryWithWindowsAuthenticationPath()
+    {
+        Uri? requestedUri = null;
+        using var handler = new StubHandler(request =>
+        {
+            requestedUri = request.RequestUri;
+            return JsonResponse("{\"id\":\"repo-guid\"}");
+        });
+        var client = new AzureDevOpsClient(_ => handler);
+        var mapping = CreateRequest().Mapping;
+
+        await client.TestConnectionAsync(mapping, CancellationToken.None);
+
+        Assert.NotNull(requestedUri);
+        Assert.Equal(
+            "/tfs/DefaultCollection/Orders%20Project/_apis/git/repositories/Orders.Api",
+            requestedUri.AbsolutePath);
+        Assert.Equal("7.0", GetQueryValue(requestedUri, "api-version"));
+    }
+
+    [Fact]
     public async Task GetsLatestIterationCommitsFromConfiguredServer()
     {
         var requests = new List<Uri>();

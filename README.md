@@ -89,7 +89,9 @@ pwsh -File .\scripts\install.ps1 -Browser Both
 1. 发布自包含 `win-x64` Bridge；
 2. 写入精确 `allowed_origins` 的 Native Messaging manifest；
 3. 在当前用户的 Chrome/Edge NativeMessagingHosts 注册表路径注册；
-4. 首次安装时复制配置示例，但不会覆盖已有配置。
+4. 安装并启动图形配置工具。
+
+图形配置工具只要求粘贴一个 Azure DevOps PR/仓库地址并选择本地 clone 目录。它自动解析服务器、Collection、项目和仓库，使用当前 Windows 身份协商 Kerberos/NTLM，并检查 Git origin、Azure DevOps 和 Codex 登录后生成配置。无需填写账号、密码或手工编辑 JSON。
 
 随后打开 `chrome://extensions` 或 `edge://extensions`：
 
@@ -110,7 +112,7 @@ pwsh -File .\scripts\package-release.ps1
 - `artifacts\DevOpsReview-Setup-0.1.0.exe` 和对应的 `.exe.sha256`：推荐给普通用户的单文件安装器；
 - `artifacts\devops-review-0.1.0-win-x64.zip` 和对应的 `.zip.sha256`：包含 self-contained Bridge、unpacked 扩展、安装/卸载脚本、配置示例、文档和 SHA-256 校验文件。
 
-生成安装器需要 Inno Setup 6。目标机操作见 [发布包说明](docs/release-package.md)。
+生成安装器需要 Inno Setup 6。目标机操作见 [发布包说明](docs/release-package.md)，高级和多仓库配置见 [配置说明](docs/configuration.md)。
 
 ## 使用
 

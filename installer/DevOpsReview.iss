@@ -35,6 +35,7 @@ Name: "edge"; Description: "为 Microsoft Edge 注册本地 Bridge"; GroupDescri
 
 [Files]
 Source: "{#PackageRoot}\bridge\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "{#PackageRoot}\DevOpsReview.Configurator.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "{#PackageRoot}\extension\*"; DestDir: "{app}\extension"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "{#PackageRoot}\scripts\*"; DestDir: "{app}\scripts"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "{#PackageRoot}\docs\*"; DestDir: "{app}\docs"; Flags: ignoreversion recursesubdirs createallsubdirs
@@ -42,14 +43,16 @@ Source: "{#PackageRoot}\README.md"; DestDir: "{app}"; Flags: ignoreversion
 Source: "{#PackageRoot}\CHANGELOG.md"; DestDir: "{app}"; Flags: ignoreversion
 Source: "{#PackageRoot}\SHA256SUMS.txt"; DestDir: "{app}"; Flags: ignoreversion
 Source: "{#PackageRoot}\config.example.json"; DestDir: "{app}"; Flags: ignoreversion
-Source: "{#PackageRoot}\config.example.json"; DestDir: "{localappdata}\DevOpsReview"; DestName: "config.json"; Flags: onlyifdoesntexist uninsneveruninstall
 
 [Registry]
 Root: HKCU; Subkey: "Software\Google\Chrome\NativeMessagingHosts\com.lus.devops_review"; ValueType: string; ValueName: ""; ValueData: "{app}\com.lus.devops_review.json"; Tasks: chrome; Flags: uninsdeletekey
 Root: HKCU; Subkey: "Software\Microsoft\Edge\NativeMessagingHosts\com.lus.devops_review"; ValueType: string; ValueName: ""; ValueData: "{app}\com.lus.devops_review.json"; Tasks: edge; Flags: uninsdeletekey
 
+[Icons]
+Name: "{group}\配置 DevOps Review"; Filename: "{app}\DevOpsReview.Configurator.exe"
+
 [Run]
-Filename: "{app}\extension"; Description: "打开扩展目录，随后在浏览器扩展页加载此目录"; Flags: shellexec postinstall skipifsilent
+Filename: "{app}\DevOpsReview.Configurator.exe"; Description: "配置 Azure DevOps 仓库"; Flags: nowait postinstall skipifsilent
 
 [UninstallDelete]
 Type: files; Name: "{app}\com.lus.devops_review.json"

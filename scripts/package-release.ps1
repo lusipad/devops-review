@@ -14,6 +14,7 @@ $outputFull = [IO.Path]::GetFullPath($OutputPath)
 $artifactsDirectory = Split-Path -Parent $outputFull
 $installerPath = Join-Path $artifactsDirectory "DevOpsReview-Setup-$Version.exe"
 $publishDirectory = Join-Path $repoRoot 'artifacts\bridge-win-x64'
+$configuratorPublishDirectory = Join-Path $repoRoot 'artifacts\configurator-win-x64'
 $staging = Join-Path $env:TEMP "devops-review-release-$([Guid]::NewGuid().ToString('N'))"
 $packageRoot = Join-Path $staging "devops-review-$Version-win-x64"
 
@@ -28,9 +29,21 @@ try {
         throw "dotnet publish failed with exit code $LASTEXITCODE."
     }
 
+    dotnet publish (Join-Path $repoRoot 'src\DevOpsReview.Configurator\DevOpsReview.Configurator.csproj') `
+        --configuration Release `
+        --runtime win-x64 `
+        --self-contained true `
+        --output $configuratorPublishDirectory `
+        -p:PublishSingleFile=true
+    if ($LASTEXITCODE -ne 0) {
+        throw "Configurator publish failed with exit code $LASTEXITCODE."
+    }
+
     New-Item -ItemType Directory -Path $packageRoot | Out-Null
     Copy-Item -LiteralPath $publishDirectory -Destination (Join-Path $packageRoot 'bridge') -Recurse
     Get-ChildItem -LiteralPath (Join-Path $packageRoot 'bridge') -Filter '*.pdb' | Remove-Item
+    Copy-Item -LiteralPath (Join-Path $configuratorPublishDirectory 'DevOpsReview.Configurator.exe') `
+        -Destination $packageRoot
     Copy-Item -LiteralPath (Join-Path $repoRoot 'extension') -Destination (Join-Path $packageRoot 'extension') -Recurse
     Remove-Item -LiteralPath (Join-Path $packageRoot 'extension\tests') -Recurse
     Remove-Item -LiteralPath (Join-Path $packageRoot 'extension\package.json')
@@ -46,6 +59,7 @@ try {
 
     $hashFiles = @(
         'bridge\DevOpsReview.Bridge.exe',
+        'DevOpsReview.Configurator.exe',
         'extension\manifest.json',
         'scripts\install-package.ps1',
         'config.example.json'

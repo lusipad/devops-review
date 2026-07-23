@@ -3,6 +3,7 @@
 .vs/
 .idea/
 .vscode/
+.omx/
 TestResults/
 artifacts/
 coverage/
