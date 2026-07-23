@@ -63,7 +63,7 @@ public sealed class NativeMessagingHost(
                             new BridgeResponseEnvelope(
                                 BridgeMessageTypes.HostStatus,
                                 message.RequestId,
-                                new { ready = true, version = "0.2.0" }),
+                                new { ready = true, version = "0.2.1" }),
                             cancellationToken).ConfigureAwait(false);
                         break;
                     default:

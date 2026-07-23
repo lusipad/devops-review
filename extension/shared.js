@@ -258,6 +258,61 @@
     return lines;
   }
 
+  function buildDiagnostics({
+    selection,
+    connectionState,
+    bridgeVersion,
+    connectionMessage,
+  }) {
+    const hasSelection = Boolean(selection);
+    const bridge = {
+      id: "bridge",
+      label: "本地 Bridge",
+      state: "unknown",
+      detail: "尚未检测",
+    };
+    const configuration = {
+      id: "configuration",
+      label: "本地配置",
+      state: "unknown",
+      detail: "连接 Bridge 后才能确认",
+    };
+
+    if (connectionState === "connecting") {
+      bridge.state = "checking";
+      bridge.detail = "正在连接 Native Messaging Host…";
+      configuration.state = "checking";
+      configuration.detail = "等待 Bridge 返回状态";
+    } else if (connectionState === "ready") {
+      bridge.state = "success";
+      bridge.detail = bridgeVersion ? `已就绪 · ${bridgeVersion}` : "已就绪";
+      configuration.state = "success";
+      configuration.detail = "配置已加载；Azure DevOps 与 Codex 将在分析时验证";
+    } else if (connectionState === "error") {
+      bridge.state = "error";
+      bridge.detail = connectionMessage || "无法连接本地 Bridge";
+    }
+
+    return [
+      {
+        id: "extension",
+        label: "浏览器扩展",
+        state: "success",
+        detail: "侧栏已运行",
+      },
+      {
+        id: "selection",
+        label: "PR 页面与选区",
+        state: hasSelection ? "success" : "attention",
+        detail: hasSelection
+          ? `${selection.repository} · PR ${selection.pullRequestId} · ${selection.filePath}:${selection.startLine}-${selection.endLine}`
+          : "请在 PR Files 的右侧代码中选择内容",
+      },
+      bridge,
+      configuration,
+    ];
+  }
+
   function safeDecode(value) {
     try {
       return decodeURIComponent(value);
@@ -277,5 +332,6 @@
     findLineNumber,
     findSelectionLineRange,
     buildReviewSelection,
+    buildDiagnostics,
   });
 });

@@ -109,8 +109,8 @@ pwsh -File .\scripts\package-release.ps1
 
 输出包括：
 
-- `artifacts\DevOpsReview-Setup-0.2.0.exe` 和对应的 `.exe.sha256`：推荐给普通用户的单文件安装器；
-- `artifacts\devops-review-0.2.0-win-x64.zip` 和对应的 `.zip.sha256`：包含 self-contained Bridge、unpacked 扩展、安装/卸载脚本、配置示例、文档和 SHA-256 校验文件。
+- `artifacts\DevOpsReview-Setup-0.2.1.exe` 和对应的 `.exe.sha256`：推荐给普通用户的单文件安装器；
+- `artifacts\devops-review-0.2.1-win-x64.zip` 和对应的 `.zip.sha256`：包含 self-contained Bridge、unpacked 扩展、安装/卸载脚本、配置示例、文档和 SHA-256 校验文件。
 
 生成安装器需要 Inno Setup 6。目标机操作见 [发布包说明](docs/release-package.md)，高级和多仓库配置见 [配置说明](docs/configuration.md)。
 
@@ -121,6 +121,8 @@ pwsh -File .\scripts\package-release.ps1
 3. 点击选区旁的“问 Codex”。
 4. 在侧栏输入问题并开始分析。
 5. 需要时点击“发布到 PR”；Bridge 会尽量发布为行内评论，无法安全定位 iteration change 时退化为普通 PR 评论。
+
+侧栏的“连接与环境”会分别显示扩展、PR 页面/选区、本地 Bridge 和配置状态。连接异常时可点击“重新检测”，站点授权或内容脚本需要调整时可直接打开“扩展设置”。Azure DevOps 身份和 Codex 登录仍在开始分析时进行实时验证，不会仅凭 Bridge 已启动显示为已验证。
 
 ## 验证
 

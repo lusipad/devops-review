@@ -47,7 +47,7 @@ jobs:
           $version = if ($env:GITHUB_REF_TYPE -eq 'tag') {
             $env:GITHUB_REF_NAME.TrimStart('v')
           } else {
-            '0.2.0'
+            '0.2.1'
           }
           .\scripts\package-release.ps1 -Version $version
 

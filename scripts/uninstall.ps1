@@ -1,6 +1,6 @@
 [CmdletBinding(SupportsShouldProcess)]
 param(
-    [string]$InstallRoot = (Join-Path $env:LOCALAPPDATA 'Programs\DevOpsReview\0.2.0'),
+    [string]$InstallRoot = (Join-Path $env:LOCALAPPDATA 'Programs\DevOpsReview\0.2.1'),
 
     [switch]$RemoveData
 )

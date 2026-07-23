@@ -74,7 +74,7 @@ public sealed class CodexAppServerClient(
                     {
                         name = "azure_devops_codex_review",
                         title = "Azure DevOps Codex Review",
-                        version = "0.2.0",
+                        version = "0.2.1",
                     },
                 },
                 cancellationToken).ConfigureAwait(false);

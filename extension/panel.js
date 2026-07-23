@@ -4,6 +4,9 @@
   const shared = globalThis.DevOpsReviewShared;
   const elements = {
     connection: document.querySelector("#connection"),
+    diagnostics: document.querySelector("#diagnostics"),
+    retryConnection: document.querySelector("#retry-connection"),
+    openSettings: document.querySelector("#open-settings"),
     emptySelection: document.querySelector("#empty-selection"),
     details: document.querySelector("#selection-details"),
     repository: document.querySelector("#repository"),
@@ -26,6 +29,10 @@
   let activeRequestId = null;
   let completedRequestId = null;
   let publishRequestId = null;
+  let connectionState = "connecting";
+  let connectionMessage = "";
+  let bridgeVersion = null;
+  let connectionGeneration = 0;
 
   void initialize();
 
@@ -33,38 +40,118 @@
     const stored = await chrome.storage.session.get("activeSelection");
     selection = stored.activeSelection || null;
     renderSelection();
+    renderDiagnostics();
     connectHost();
 
     chrome.storage.onChanged.addListener((changes, area) => {
       if (area === "session" && changes.activeSelection) {
         selection = changes.activeSelection.newValue || null;
         renderSelection();
+        renderDiagnostics();
       }
     });
 
     elements.form.addEventListener("submit", startReview);
     elements.cancel.addEventListener("click", cancelReview);
     elements.publish.addEventListener("click", publishReview);
+    elements.retryConnection.addEventListener("click", () => {
+      if (!activeRequestId) {
+        connectHost();
+      }
+    });
+    elements.openSettings.addEventListener("click", () => void chrome.runtime.openOptionsPage());
   }
 
   function connectHost() {
+    const generation = ++connectionGeneration;
+    const previousPort = port;
+    port = null;
+    previousPort?.disconnect();
+    connectionState = "connecting";
+    connectionMessage = "";
+    bridgeVersion = null;
+    elements.connection.textContent = "正在连接本地 Bridge…";
+    elements.connection.dataset.state = "checking";
+    elements.ask.disabled = true;
+    renderDiagnostics();
+
     try {
-      port = chrome.runtime.connectNative(shared.HOST_NAME);
-      port.onMessage.addListener(handleHostMessage);
-      port.onDisconnect.addListener(() => {
+      const nextPort = chrome.runtime.connectNative(shared.HOST_NAME);
+      port = nextPort;
+      nextPort.onMessage.addListener((message) => {
+        if (generation === connectionGeneration) {
+          handleHostMessage(message);
+        }
+      });
+      nextPort.onDisconnect.addListener(() => {
+        if (generation !== connectionGeneration) {
+          return;
+        }
         const message = chrome.runtime.lastError?.message || "本地 Bridge 已断开。";
         elements.connection.textContent = message;
         elements.connection.dataset.state = "error";
         port = null;
+        connectionState = "error";
+        connectionMessage = message;
+        bridgeVersion = null;
         finishRequest();
+        renderDiagnostics();
       });
-      elements.connection.textContent = "本地 Bridge 已连接";
-      elements.ask.disabled = !selection;
 
-      port.postMessage({ type: "host.status", requestId: crypto.randomUUID(), payload: {} });
+      nextPort.postMessage({ type: "host.status", requestId: crypto.randomUUID(), payload: {} });
     } catch (error) {
-      elements.connection.textContent = `无法连接本地 Bridge：${error.message}`;
+      const message = `无法连接本地 Bridge：${error.message}`;
+      elements.connection.textContent = message;
+      elements.connection.dataset.state = "error";
+      connectionState = "error";
+      connectionMessage = message;
+      renderDiagnostics();
     }
+  }
+
+  function renderDiagnostics() {
+    const stateLabels = {
+      success: "正常",
+      attention: "需操作",
+      checking: "检测中",
+      error: "错误",
+      unknown: "待确认",
+    };
+    const diagnostics = shared.buildDiagnostics({
+      selection,
+      connectionState,
+      bridgeVersion,
+      connectionMessage,
+    });
+
+    const items = diagnostics.map((diagnostic) => {
+      const item = document.createElement("li");
+      item.className = "diagnostic-item";
+      item.dataset.state = diagnostic.state;
+
+      const dot = document.createElement("span");
+      dot.className = "diagnostic-dot";
+      dot.setAttribute("aria-hidden", "true");
+
+      const copy = document.createElement("span");
+      copy.className = "diagnostic-copy";
+      const label = document.createElement("strong");
+      label.className = "diagnostic-label";
+      label.textContent = diagnostic.label;
+      const detail = document.createElement("span");
+      detail.className = "diagnostic-detail";
+      detail.textContent = diagnostic.detail;
+      copy.append(label, detail);
+
+      const state = document.createElement("span");
+      state.className = "diagnostic-state";
+      state.textContent = stateLabels[diagnostic.state];
+
+      item.append(dot, copy, state);
+      return item;
+    });
+    elements.diagnostics.replaceChildren(...items);
+    elements.retryConnection.disabled = Boolean(activeRequestId);
   }
 
   function renderSelection() {
@@ -98,6 +185,7 @@
     elements.progress.textContent = "正在提交…";
     elements.ask.disabled = true;
     elements.cancel.hidden = false;
+    renderDiagnostics();
 
     port.postMessage({
       type: "review.start",
@@ -151,9 +239,23 @@
 
     if (!message || message.requestId !== activeRequestId) {
       if (message?.type === "host.status") {
-        elements.connection.textContent = message.payload?.ready
-          ? `本地 Bridge 已就绪 · ${message.payload.version}`
-          : "本地 Bridge 未就绪";
+        if (message.payload?.ready) {
+          bridgeVersion = message.payload.version || null;
+          connectionState = "ready";
+          connectionMessage = "";
+          elements.connection.textContent = bridgeVersion
+            ? `本地 Bridge 已就绪 · ${bridgeVersion}`
+            : "本地 Bridge 已就绪";
+          elements.connection.dataset.state = "success";
+          elements.ask.disabled = !selection;
+        } else {
+          connectionState = "error";
+          connectionMessage = "本地 Bridge 未就绪";
+          elements.connection.textContent = connectionMessage;
+          elements.connection.dataset.state = "error";
+          elements.ask.disabled = true;
+        }
+        renderDiagnostics();
       }
       return;
     }
@@ -195,5 +297,6 @@
     activeRequestId = null;
     elements.ask.disabled = !selection || !port;
     elements.cancel.hidden = true;
+    renderDiagnostics();
   }
 })();

@@ -3,25 +3,25 @@
 推荐下载单文件安装器：
 
 ```text
-DevOpsReview-Setup-0.2.0.exe
+DevOpsReview-Setup-0.2.1.exe
 ```
 
 需要便携式文件或手工部署时使用 ZIP：
 
 ```text
-devops-review-0.2.0-win-x64.zip
+devops-review-0.2.1-win-x64.zip
 ```
 
 两种方式都包含 self-contained Bridge、可加载的 unpacked 扩展、配置示例和文档。同目录的 `.sha256` 文件用于下载后校验。目标机器不需要安装 .NET Runtime，但仍需要 Git、Edge/Chrome 和已登录的 Codex CLI。
 
 ## 使用安装器（推荐）
 
-1. 下载 `DevOpsReview-Setup-0.2.0.exe` 和对应的 `.exe.sha256`。
+1. 下载 `DevOpsReview-Setup-0.2.1.exe` 和对应的 `.exe.sha256`。
 2. 校验安装器：
 
    ```powershell
-   $expected = (Get-Content .\DevOpsReview-Setup-0.2.0.exe.sha256).Split(' ')[0]
-   $actual = (Get-FileHash .\DevOpsReview-Setup-0.2.0.exe -Algorithm SHA256).Hash.ToLowerInvariant()
+   $expected = (Get-Content .\DevOpsReview-Setup-0.2.1.exe.sha256).Split(' ')[0]
+   $actual = (Get-FileHash .\DevOpsReview-Setup-0.2.1.exe -Algorithm SHA256).Hash.ToLowerInvariant()
    if ($actual -ne $expected) { throw '安装器 SHA-256 不匹配' }
    ```
 
@@ -34,6 +34,8 @@ devops-review-0.2.0-win-x64.zip
 9. 确认扩展 ID 为 `kldpfliioeaahafemncagclpehbnblig`。
 10. 打开扩展设置页，填写 Collection 之前的 Azure DevOps Server 根地址并授权。
 11. 重新加载 PR Files 页面，选择右侧/source 代码并点击“问 Codex”。
+
+侧栏会显示扩展、PR 页面/选区、本地 Bridge 和配置的独立状态。若 Native Messaging Host 未注册或 Bridge 断开，可在侧栏看到具体错误并点击“重新检测”；“扩展设置”可用于重新授权 Azure DevOps 地址。
 
 浏览器安全模型不允许普通安装器静默加载 unpacked 扩展，因此第 7—9 步只需人工完成一次。
 
@@ -58,8 +60,8 @@ devops-review-0.2.0-win-x64.zip
 解压前校验整个 ZIP：
 
 ```powershell
-$expected = (Get-Content .\devops-review-0.2.0-win-x64.zip.sha256).Split(' ')[0]
-$actual = (Get-FileHash .\devops-review-0.2.0-win-x64.zip -Algorithm SHA256).Hash.ToLowerInvariant()
+$expected = (Get-Content .\devops-review-0.2.1-win-x64.zip.sha256).Split(' ')[0]
+$actual = (Get-FileHash .\devops-review-0.2.1-win-x64.zip -Algorithm SHA256).Hash.ToLowerInvariant()
 if ($actual -ne $expected) { throw '发布包 SHA-256 不匹配' }
 ```
 

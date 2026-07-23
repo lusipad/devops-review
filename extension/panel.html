@@ -14,6 +14,15 @@
       <p id="connection" class="status" role="status">正在连接本地 Bridge…</p>
     </header>
 
+    <section aria-labelledby="diagnostics-heading">
+      <div class="section-heading-row">
+        <h2 id="diagnostics-heading">连接与环境</h2>
+        <button id="retry-connection" type="button" class="text-button">重新检测</button>
+      </div>
+      <ul id="diagnostics" class="diagnostics" aria-live="polite"></ul>
+      <button id="open-settings" type="button" class="secondary compact">扩展设置</button>
+    </section>
+
     <section class="context" aria-labelledby="context-heading">
       <h2 id="context-heading">当前选区</h2>
       <p id="empty-selection">请在 Pull Request 文件视图中选择代码，然后点击“问 Codex”。</p>

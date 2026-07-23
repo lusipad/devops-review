@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.2.1 — 2026-07-24
+
+- 插件侧栏新增“连接与环境”诊断卡，分别显示扩展、PR 页面/选区、本地 Bridge 和配置状态；
+- 状态同时使用文字和颜色表达，并显示 Bridge 版本及当前仓库、PR、文件和行号；
+- Native Messaging 连接失败或断开时保留具体错误，并提供“重新检测”和“扩展设置”快捷入口；
+- Azure DevOps 身份与 Codex 登录仍在开始分析时实时验证，不会仅凭 Bridge 启动显示为已验证。
+
 ## 0.2.0 — 2026-07-24
 
 - 可直接从 GitHub Release 下载按用户安装的单文件 Windows EXE，无需预装 .NET Runtime；

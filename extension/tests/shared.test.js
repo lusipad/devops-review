@@ -141,3 +141,101 @@ test("builds a Monaco selection even when the DOM reports it as collapsed", () =
     selectedText: "second",
   });
 });
+
+test("builds actionable diagnostics before code is selected", () => {
+  assert.deepEqual(
+    shared.buildDiagnostics({
+      selection: null,
+      connectionState: "connecting",
+    }),
+    [
+      {
+        id: "extension",
+        label: "浏览器扩展",
+        state: "success",
+        detail: "侧栏已运行",
+      },
+      {
+        id: "selection",
+        label: "PR 页面与选区",
+        state: "attention",
+        detail: "请在 PR Files 的右侧代码中选择内容",
+      },
+      {
+        id: "bridge",
+        label: "本地 Bridge",
+        state: "checking",
+        detail: "正在连接 Native Messaging Host…",
+      },
+      {
+        id: "configuration",
+        label: "本地配置",
+        state: "checking",
+        detail: "等待 Bridge 返回状态",
+      },
+    ],
+  );
+});
+
+test("builds ready diagnostics with the active source selection", () => {
+  assert.deepEqual(
+    shared.buildDiagnostics({
+      selection: {
+        repository: "Orders.Api",
+        pullRequestId: 1427,
+        filePath: "/src/Order.cs",
+        startLine: 18,
+        endLine: 24,
+      },
+      connectionState: "ready",
+      bridgeVersion: "0.2.1",
+    }),
+    [
+      {
+        id: "extension",
+        label: "浏览器扩展",
+        state: "success",
+        detail: "侧栏已运行",
+      },
+      {
+        id: "selection",
+        label: "PR 页面与选区",
+        state: "success",
+        detail: "Orders.Api · PR 1427 · /src/Order.cs:18-24",
+      },
+      {
+        id: "bridge",
+        label: "本地 Bridge",
+        state: "success",
+        detail: "已就绪 · 0.2.1",
+      },
+      {
+        id: "configuration",
+        label: "本地配置",
+        state: "success",
+        detail: "配置已加载；Azure DevOps 与 Codex 将在分析时验证",
+      },
+    ],
+  );
+});
+
+test("keeps a Native Messaging failure visible in diagnostics", () => {
+  const diagnostics = shared.buildDiagnostics({
+    selection: null,
+    connectionState: "error",
+    connectionMessage: "Specified native messaging host not found.",
+  });
+
+  assert.deepEqual(diagnostics[2], {
+    id: "bridge",
+    label: "本地 Bridge",
+    state: "error",
+    detail: "Specified native messaging host not found.",
+  });
+  assert.deepEqual(diagnostics[3], {
+    id: "configuration",
+    label: "本地配置",
+    state: "unknown",
+    detail: "连接 Bridge 后才能确认",
+  });
+});
